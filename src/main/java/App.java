@@ -8,17 +8,6 @@ public class App {
 
         System.out.println("Done.");
 
-        try {
-            Twitter twitter = TwitterFactory.getSingleton();
-            Query query = new Query("hello");
-            QueryResult result = twitter.search(query);
-            for (Status status : result.getTweets()) {
-                System.out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
-            }
-        }
-        catch (TwitterException e) {
-            e.printStackTrace();
-        }
     }
 
 }
