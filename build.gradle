@@ -2,7 +2,11 @@
 group 'com.hackathon.charter'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'java'
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'war'
+}
 
 sourceCompatibility = 1.8
 
@@ -36,6 +40,7 @@ dependencies {
     compile 'com.amazonaws:aws-java-sdk:1.11.404'
     compile 'com.amazonaws:aws-java-sdk-comprehend'
     compile 'org.twitter4j:twitter4j-core:4.0.4'
+    compile "org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}"
     compileClasspath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     compile "org.springframework.boot:spring-boot-starter-data-mongodb-reactive:${springBootVersion}"
     compile "org.projectlombok:lombok:1.16.20"
