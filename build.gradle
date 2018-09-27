@@ -36,8 +36,10 @@ dependencies {
     compile 'com.amazonaws:aws-java-sdk:1.11.404'
     compile 'com.amazonaws:aws-java-sdk-comprehend'
     compile 'org.twitter4j:twitter4j-core:4.0.4'
-    compileClasspath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     compile "org.springframework.boot:spring-boot-starter-data-mongodb-reactive:${springBootVersion}"
     compile "org.projectlombok:lombok:1.16.20"
+    compile 'tech.tablesaw:tablesaw-core:0.25.2'
+    compile 'tech.tablesaw:tablesaw-jsplot:0.25.2'
+    compileClasspath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
