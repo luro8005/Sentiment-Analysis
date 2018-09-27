@@ -1,0 +1,43 @@
+
+group 'com.hackathon.charter'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    springBootVersion = '2.0.4.RELEASE'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.416'
+    }
+}
+
+dependencies {
+    compile 'com.amazonaws:aws-java-sdk-s3'
+    compile 'com.amazonaws:aws-java-sdk:1.11.404'
+    compile 'com.amazonaws:aws-java-sdk-comprehend'
+    compile 'org.twitter4j:twitter4j-core:4.0.4'
+    compileClasspath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    compile "org.springframework.boot:spring-boot-starter-data-mongodb-reactive:${springBootVersion}"
+    compile "org.projectlombok:lombok:1.16.20"
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
