@@ -1,3 +1,5 @@
+package hackathon;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -27,7 +29,7 @@ public class App {
             Document document = (Document) it.next();
             String json = document.toJson();
             try {
-                TweetInfo tweet = new ObjectMapper().readValue(json, TweetInfo.class);
+                hackathon.TweetInfo tweet = new ObjectMapper().readValue(json, TweetInfo.class);
                 String sentiment = Sentiment.getSentiment(tweet.getText());
                 System.out.println(tweet.getText() + " ===>>> " + sentiment);
             } catch (IOException e) {
