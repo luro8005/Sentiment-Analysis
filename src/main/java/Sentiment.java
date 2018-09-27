@@ -8,7 +8,8 @@ import com.amazonaws.services.comprehend.model.DetectSentimentResult;
 
 public class Sentiment {
 
-    public static void getSentiment(String text) {
+    public static String getSentiment(String text) {
+
         // Create credentials using a provider chain. For more information, see
         // https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html
         AWSCredentialsProvider awsCreds = DefaultAWSCredentialsProviderChain.getInstance();
@@ -26,5 +27,6 @@ public class Sentiment {
         DetectSentimentResult detectSentimentResult = comprehendClient.detectSentiment(detectSentimentRequest);
         System.out.println(detectSentimentResult);
         System.out.println("End of DetectSentiment\n");
+        return detectSentimentResult.getSentiment();
     }
 }
