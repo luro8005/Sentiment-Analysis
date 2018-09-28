@@ -24,8 +24,10 @@ spectrumtv_results = list(spectv_rs.stream())
 spectrumtv_tweets = {}
 for tweet in spectrumtv_results:
     spectrumtv_tweets[tweet.created_at_seconds] = (tweet.screen_name,
-                                                   tweet.all_text.replace('\n', ' '))
+                                                   tweet.all_text.replace('\n', ' '),
+                                                   ' ')  # this space is a placeholder for the sentiment value
 print("{} tweets found containing \"spectrumtv\"\n".format(len(spectrumtv_results)))
+
 
 # repeat of above logic with a different search param
 print("searching for tweets containing \"spectrumoutage\"")
@@ -38,8 +40,10 @@ spectrum_outage_results = list(spec_out_rs.stream())
 spectrum_outage_tweets = {}
 for tweet in spectrum_outage_results:
     spectrum_outage_tweets[tweet.created_at_seconds] = (tweet.screen_name,
-                                                        tweet.all_text.replace('\n', ' '))
+                                                        tweet.all_text.replace('\n', ' '),
+                                                        ' ')  # this space is a placeholder for the sentiment value
 print("{} tweets found containing \"spectrumoutage\"\n".format(len(spectrum_outage_results)))
+
 
 # repeat of above logic with a different search param
 print("searching for tweets containing \"ask_spectrum\"")
@@ -52,7 +56,8 @@ ask_spectrum_results = list(ask_spec_rs.stream())
 ask_spectrum_tweets = {}
 for tweet in ask_spectrum_results:
     ask_spectrum_tweets[tweet.created_at_seconds] = (tweet.screen_name,
-                                                     tweet.all_text.replace('\n', ' '))
+                                                     tweet.all_text.replace('\n', ' '),
+                                                     ' ')  # this space is a placeholder for the sentiment value
 print("{} tweets found containing \"ask_spectrum\"\n".format(len(ask_spectrum_results)))
 
 
