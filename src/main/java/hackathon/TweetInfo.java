@@ -12,7 +12,7 @@ public class TweetInfo {
 
     @Id
     private Object _id;
-    private String timestamp;
+    private long timestamp;
     private String author;
     private String text;
     private String sentiment;
@@ -25,11 +25,11 @@ public class TweetInfo {
         this._id = _id;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

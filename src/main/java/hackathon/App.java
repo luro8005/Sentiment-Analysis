@@ -19,7 +19,7 @@ public class App {
 
         MongoDatabase database = getMongoDatabase();
 
-        MongoCollection<Document> twits = database.getCollection("twitterinfo");
+        MongoCollection<Document> twits = database.getCollection("sentiment");
 
         FindIterable<Document> tweetsWithoutSentiments = getTweetsWithoutSentiments(twits);
 
@@ -41,7 +41,7 @@ public class App {
         TweetInfo tweet = new ObjectMapper().readValue(json, TweetInfo.class);
         tweet.setSentiment(Sentiment.getSentiment(tweet.getText()));
 
-        twits.updateOne(eq("text", tweet.getText()), Updates.set("sentiment", tweet.getSentiment()));
+        twits.updateOne(eq("timestamp", tweet.getTimestamp()), Updates.set("sentiment", tweet.getSentiment()));
     }
 
     private static FindIterable<Document> getTweetsWithoutSentiments(MongoCollection<Document> twits) {
@@ -52,7 +52,7 @@ public class App {
 
     private static MongoDatabase getMongoDatabase() {
         MongoClient mongoClient = new MongoClient("localhost", 27017);
-        return mongoClient.getDatabase("test");
+        return mongoClient.getDatabase("sentimentanalysis");
     }
 
 }
