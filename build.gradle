@@ -40,6 +40,6 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     compileClasspath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     compile "org.springframework.boot:spring-boot-starter-data-mongodb-reactive:${springBootVersion}"
-    compile "org.projectlombok:lombok:1.16.20"
+    compile "org.projectlombok:lombok:1.16.20"              g
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
