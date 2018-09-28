@@ -5,6 +5,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Updates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -16,27 +17,42 @@ import static com.mongodb.client.model.Filters.eq;
 public class App {
     public static void main(String[] args) {
 
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
-        MongoDatabase database = mongoClient.getDatabase("test");
+        MongoDatabase database = getMongoDatabase();
 
         MongoCollection<Document> twits = database.getCollection("twitterinfo");
 
-        Bson query = eq("sentiment", "");
+        FindIterable<Document> tweetsWithoutSentiments = getTweetsWithoutSentiments(twits);
 
-        FindIterable<Document> iterDoc = twits.find(query);
-        Iterator it = iterDoc.iterator();
+        Iterator it = tweetsWithoutSentiments.iterator();
         while (it.hasNext()) {
             Document document = (Document) it.next();
             String json = document.toJson();
             try {
-                hackathon.TweetInfo tweet = new ObjectMapper().readValue(json, TweetInfo.class);
-                String sentiment = Sentiment.getSentiment(tweet.getText());
-                System.out.println(tweet.getText() + " ===>>> " + sentiment);
+                updateSentiments(twits, json);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
+    }
+
+    private static void updateSentiments(MongoCollection<Document> twits, String json) throws IOException {
+        TweetInfo tweet = new ObjectMapper().readValue(json, TweetInfo.class);
+        tweet.setSentiment(Sentiment.getSentiment(tweet.getText()));
+
+        twits.updateOne(eq("text", tweet.getText()), Updates.set("sentiment", tweet.getSentiment()));
+    }
+
+    private static FindIterable<Document> getTweetsWithoutSentiments(MongoCollection<Document> twits) {
+        Bson query = eq("sentiment", "");
+
+        return twits.find(query);
+    }
+
+    private static MongoDatabase getMongoDatabase() {
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        return mongoClient.getDatabase("test");
     }
 
 }
