@@ -1,8 +1,11 @@
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'war'
+}
 
 group 'com.hackathon.charter'
 version '1.0-SNAPSHOT'
-
-apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
@@ -14,28 +17,27 @@ ext {
     springBootVersion = '2.0.4.RELEASE'
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
+repositories {
+
+    maven {
+        url "http://nexusnpm.dev-charter.net:8081/nexus/content/repositories/public/"
     }
-    dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+    maven {
+        url "https://repo.spring.io/libs-milestone"
+    }
+    maven {
+        url "https://plugins.gradle.org/m2/"
     }
 }
 
-apply plugin: "io.spring.dependency-management"
-
-dependencyManagement {
-    imports {
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.416'
-    }
-}
 
 dependencies {
     compile 'com.amazonaws:aws-java-sdk-s3'
     compile 'com.amazonaws:aws-java-sdk:1.11.404'
     compile 'com.amazonaws:aws-java-sdk-comprehend'
     compile 'org.twitter4j:twitter4j-core:4.0.4'
+    compile "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+    compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     compileClasspath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     compile "org.springframework.boot:spring-boot-starter-data-mongodb-reactive:${springBootVersion}"
     compile "org.projectlombok:lombok:1.16.20"
