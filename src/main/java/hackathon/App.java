@@ -1,6 +1,7 @@
 package hackathon;
 
-import tech.tablesaw.api.DoubleColumn;
+import hackathon.dataVisualization.Figures;
+import hackathon.dataVisualization.SampleData;
 
 public class App {
     public static void main(String[] args) {
@@ -12,12 +13,15 @@ public class App {
 
         System.out.println();
 
-        double[] numbers = {1, 2, 3, 4};
-        DoubleColumn nc = DoubleColumn.create("Test", numbers);
-        System.out.println(nc.print());
+        SampleData.showSampleTables();
 
-        DoubleColumn nc2 = nc.multiply(7);
-        System.out.println(nc2.print());
+        System.out.println();
+
+        SampleData.SeparateByMonth();
+
+        System.out.println();
+
+        Figures.CreateLineChart();
 
     }
 

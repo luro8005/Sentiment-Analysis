@@ -25,12 +25,6 @@ buildscript {
 
 apply plugin: "io.spring.dependency-management"
 
-dependencyManagement {
-    imports {
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.416'
-    }
-}
-
 dependencies {
     compile 'com.amazonaws:aws-java-sdk-s3'
     compile 'com.amazonaws:aws-java-sdk:1.11.404'
