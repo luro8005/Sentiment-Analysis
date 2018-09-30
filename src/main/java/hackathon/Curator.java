@@ -3,6 +3,7 @@ package hackathon;
  * Copyright 2018, Charter Communications,  All rights reserved.
  */
 
+import hackathon.repository.TwitterInfoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class Curator {
 
     @Autowired
-    SentimentRepository repository;
+    TwitterInfoRepository repository;
 
-    List<TweetInfo> tweetInfos = repository.findAll();
+    List<TwitterInfo> twitterInfos = repository.findAll();
 
 
 
