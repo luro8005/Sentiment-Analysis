@@ -2,37 +2,57 @@ package hackathon; /**
  * Copyright 2018, Charter Communications,  All rights reserved.
  */
 
-import com.mongodb.reactivestreams.client.MongoClient;
-import com.mongodb.reactivestreams.client.MongoClients;
+import com.mongodb.MongoClient;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
-import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
  * @author jkendall1
  */
 @EnableMongoAuditing
-@EnableReactiveMongoRepositories
+@EnableMongoRepositories
 @SpringBootApplication(scanBasePackages = {"hackathon"})
-public class SentimentAnalysisAppConfig extends AbstractReactiveMongoConfiguration {
+@PropertySources({
+    @PropertySource(value = "classpath:/SentimentAnalysis.properties", ignoreResourceNotFound = false),
+})
+
+public class SentimentAnalysisAppConfig extends AbstractMongoConfiguration {
 
     public static void main(String[] args) {SpringApplication.run(SentimentAnalysisAppConfig.class, args);}
 
     @Value("${spring.data.mongodb.database}")
     String mongoDbName;
-
-    @Override
-    @Bean
-    public MongoClient reactiveMongoClient() {
-        return MongoClients.create();
-    }
+    @Value("${spring.data.mongodb.host}")
+    String hostName;
 
     @Override
     protected String getDatabaseName() {
         return mongoDbName;
+    }
+
+    @Override
+    public com.mongodb.MongoClient mongoClient() {
+        return new MongoClient(hostName);
+    }
+
+    @Override
+    protected Collection<String> getMappingBasePackages() {
+        ArrayList<String> basePackages = new ArrayList();
+        basePackages.add("hackathon");
+        return basePackages;
+    }
+
+    @Override
+    public MongoTemplate mongoTemplate() throws Exception {
+        return super.mongoTemplate();
     }
 }
