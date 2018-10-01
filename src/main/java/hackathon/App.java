@@ -5,16 +5,18 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Updates;
-import java.io.IOException;
-import java.util.Iterator;
+import hackathon.dataVisualization.Figures;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-public class App {
-    public static void main(String[] args) {
+import java.io.IOException;
+import java.util.*;
 
+import static com.mongodb.client.model.Filters.eq;
+
+public class App {
+    public static void main(String[] args){
 
         MongoDatabase database = getMongoDatabase();
 
@@ -34,6 +36,12 @@ public class App {
             }
         }
 
+        try {
+            Figures.createSentimentGraph();
+            Figures.customerPieChart();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void updateSentiments(MongoCollection<Document> twits, String json) throws IOException {
