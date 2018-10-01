@@ -37,7 +37,8 @@ public class App {
         }
 
         try {
-            Figures.createGraph();
+            Figures.createSentimentGraph();
+            Figures.customerPieChart();
         } catch (IOException e) {
             e.printStackTrace();
         }

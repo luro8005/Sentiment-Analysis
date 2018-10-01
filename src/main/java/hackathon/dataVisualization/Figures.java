@@ -2,6 +2,7 @@ package hackathon.dataVisualization;
 
 import tech.tablesaw.api.*;
 import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.api.PiePlot;
 import tech.tablesaw.plotly.api.TimeSeriesPlot;
 
 import java.io.IOException;
@@ -132,7 +133,7 @@ public class Figures {
 
     }
 
-    public static void createGraph() throws IOException {
+    public static void createSentimentGraph() throws IOException {
 
         Table analyzedSentiments = Table.read().csv("../spectrum-sentiment/py_scripts/sentiments.csv");
 
@@ -210,6 +211,50 @@ public class Figures {
 
         Plot.show(
                 TimeSeriesPlot.create("Spectrum Sentiment", lastTable, "date", "number of tweets", "sentiments"));
+
+    }
+
+    public static void customerPieChart() throws IOException {
+
+        Table customers = null;
+        try {
+            customers = Table.read().csv("../spectrum-sentiment/py_scripts/authors.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Set<String> names = new HashSet<>();
+
+        for (int i = 0; i < customers.rowCount(); i++) {
+            String name = customers.stringColumn("author").get(i);
+            names.add(name);
+        }
+
+        List<Double> count = new ArrayList<>();
+
+        for (String n : names) {
+            double nameCount = customers.where(customers.stringColumn("author").isEqualTo(n)).rowCount();
+            count.add(nameCount);
+        }
+
+        Double[] newCount = count.toArray(new Double[0]);
+        String[] filteredNames = names.toArray(new String[0]);
+
+        Table customerTweetCount = Table.create("Customer Tweet Count").addColumns(
+                DoubleColumn.create("count", newCount),
+                StringColumn.create("author", filteredNames)
+        );
+
+        Table sortedCustomerTweetCount = customerTweetCount.sortDescendingOn("count");
+
+        Table topTweetingCustomers = sortedCustomerTweetCount.inRange(0,20);
+
+        Plot.show(
+                PiePlot.create("Top 20 Customers by Number of Tweets", topTweetingCustomers,
+                        "author", "count"));
+
+
+
 
     }
 
