@@ -2,13 +2,17 @@ package hackathon.dataVisualization;
 
 import tech.tablesaw.api.*;
 import tech.tablesaw.plotly.Plot;
-import tech.tablesaw.plotly.api.LinePlot;
-import tech.tablesaw.plotly.api.OHLCPlot;
 import tech.tablesaw.plotly.api.TimeSeriesPlot;
-import tech.tablesaw.plotly.components.Figure;
 
+import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class Figures {
@@ -100,30 +104,6 @@ public class Figures {
         int decemberMixedTweets = tweets.where(tweets.dateColumn("date").isBetweenIncluding(firstDec,firstDec.plusWeeks(4)).
                 and(tweets.stringColumn("sentiment").isEqualTo("mixed"))).rowCount();
 
-//        System.out.println(septemberTweets);
-//        System.out.println("positive = " + septemberPositiveTweets);
-//        System.out.println("negative = " + septemberNegativeTweets);
-//        System.out.println("neutral = " + septemberNeutralTweets);
-//        System.out.println("mixed = " + septemberMixedTweets);
-//        System.out.println();
-//        System.out.println(novemberTweets);
-//        System.out.println("positive = " + octoberPositiveTweets);
-//        System.out.println("negative = " + octoberNegativeTweets);
-//        System.out.println("neutral = " + octoberNeutralTweets);
-//        System.out.println("mixed = " + octoberMixedTweets);
-//        System.out.println();
-//        System.out.println(octoberTweets);
-//        System.out.println("positive = " + novemberPositiveTweets);
-//        System.out.println("negative = " + novemberNegativeTweets);
-//        System.out.println("neutral = " + novemberNeutralTweets);
-//        System.out.println("mixed = " + novemberMixedTweets);
-//        System.out.println();
-//        System.out.println(decemberTweets);
-//        System.out.println("positive = " + decemberPositiveTweets);
-//        System.out.println("negative = " + decemberNegativeTweets);
-//        System.out.println("neutral = " + decemberNeutralTweets);
-//        System.out.println("mixed = " + decemberMixedTweets);
-
 
         LocalDate[] months = {firstSep, firstSep, firstSep, firstSep, firstOct, firstOct, firstOct, firstOct,
                 firstNov, firstNov, firstNov, firstNov, firstDec, firstDec, firstDec, firstDec};
@@ -149,6 +129,87 @@ public class Figures {
 
         Plot.show(
                 TimeSeriesPlot.create("Spectrum Sentiment", spectrumSentiment, "date", "number of tweets", "sentiments"));
+
+    }
+
+    public static void createGraph() throws IOException {
+
+        Table analyzedSentiments = Table.read().csv("../spectrum-sentiment/py_scripts/sentiments.csv");
+
+        DateColumn correctDays = DateColumn.create("date");
+
+        for (int i = 0; i < analyzedSentiments.rowCount(); i++) {
+            Double time = analyzedSentiments.doubleColumn("timestamp").get(i);
+            LocalDate dateTime = Instant.ofEpochSecond(time.longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+            correctDays.append(dateTime);
+        }
+
+        analyzedSentiments.addColumns(correctDays);
+
+        analyzedSentiments.removeColumns("timestamp");
+
+        Set<LocalDate> filteredDateSet = new HashSet<>();
+
+        for (int i = 0; i < analyzedSentiments.rowCount(); i++) {
+            LocalDate currentDate = analyzedSentiments.dateColumn("date").get(i);
+            filteredDateSet.add(currentDate);
+        }
+
+        List<LocalDate> filteredDateList = new ArrayList<>(filteredDateSet);
+
+        DateColumn filteredDates = DateColumn.create("filteredDates", filteredDateList);
+
+        List<LocalDate> lastDateList = new ArrayList<>();
+        List<Integer> lastValueList = new ArrayList<>();
+        List<String> lastStringList = new ArrayList<>();
+
+        for (LocalDate day : filteredDates){
+            int positiveCount = analyzedSentiments.where(analyzedSentiments.dateColumn("date").isEqualTo(day).
+                    and(analyzedSentiments.stringColumn("sentiment").isEqualTo("POSITIVE"))).rowCount();
+
+            int negativeCount = analyzedSentiments.where(analyzedSentiments.dateColumn("date").isEqualTo(day).
+                    and(analyzedSentiments.stringColumn("sentiment").isEqualTo("NEGATIVE"))).rowCount();
+
+            int neutralCount = analyzedSentiments.where(analyzedSentiments.dateColumn("date").isEqualTo(day).
+                    and(analyzedSentiments.stringColumn("sentiment").isEqualTo("NEUTRAL"))).rowCount();
+
+            int mixedCount = analyzedSentiments.where(analyzedSentiments.dateColumn("date").isEqualTo(day).
+                    and(analyzedSentiments.stringColumn("sentiment").isEqualTo("MIXED"))).rowCount();
+
+            lastDateList.add(day);
+            lastValueList.add(positiveCount);
+            lastStringList.add("POSITIVE");
+
+            lastDateList.add(day);
+            lastValueList.add(negativeCount);
+            lastStringList.add("NEGATIVE");
+
+            lastDateList.add(day);
+            lastValueList.add(neutralCount);
+            lastStringList.add("NEUTRAL");
+
+            lastDateList.add(day);
+            lastValueList.add(mixedCount);
+            lastStringList.add("MIXED");
+        }
+
+        List<Double> lastDoubleValueList = new ArrayList<>();
+
+        for(int value : lastValueList){
+            Double newValue = (double) value;
+            lastDoubleValueList.add(newValue);
+        }
+
+        Double[] lastDouble = lastDoubleValueList.toArray(new Double[0]);
+
+        Table lastTable = Table.create("Spectrum Sentiment").addColumns(
+                DateColumn.create("date", lastDateList),
+                StringColumn.create("sentiments", lastStringList),
+                DoubleColumn.create("number of tweets", lastDouble)
+        );
+
+        Plot.show(
+                TimeSeriesPlot.create("Spectrum Sentiment", lastTable, "date", "number of tweets", "sentiments"));
 
     }
 
